@@ -7,18 +7,21 @@ import javax.swing.JFrame;
 
 public class Mandelbrot extends JFrame {
 
-    private final int MAX_ITER = 1570;
+    private final int MAX_ITER;
     private final double ZOOM = 150;
+    private int noOfThreads;
     private BufferedImage I;
 
-    public Mandelbrot() {
+    public Mandelbrot(int max_iter, int noOfThreads) {
         super("Mandelbrot Set");
+        MAX_ITER =max_iter;
+        this.noOfThreads = noOfThreads;
         setBounds(100, 100, 800, 600);
         setResizable(false);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         I = new BufferedImage(getWidth(), getHeight(), BufferedImage.TYPE_INT_RGB);
         List<Future<MandelbrotCoordinates>> mandelbrotCoordinatesList = new ArrayList<>();
-        ExecutorService sequenceExecutor = Executors.newFixedThreadPool(100);
+        ExecutorService sequenceExecutor = Executors.newFixedThreadPool(noOfThreads);
         for (int y = 0; y < getHeight(); y++) {
             for (int x = 0; x < getWidth(); x++) {
                 Callable<MandelbrotCoordinates> coordinatesCallable = new MandelbrotIterationCounter(MAX_ITER, ZOOM, x, y);
